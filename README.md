@@ -7,6 +7,7 @@ ngx_lua_waf 是我刚入职趣游时候开发的一个基于 ngx_lua 的 web 应
 现在开源出来，遵从 MIT 许可协议。其中包含我们的过滤规则。如果大家有什么建议和想 fa，欢迎和我一起完善。
 
 ### 用途：
+
 防止 sql 注入，本地包含，部分溢出，fuzzing 测试，xss,SSRF 等 web 攻击
 防止 svn/备份之类文件泄漏
 防止 ApacheBench 之类压力测试工具的攻击
@@ -44,7 +45,7 @@ nginx 安装路径假设为:/usr/local/nginx/conf/
 
 ### 配置文件详细说明：
 
-    	RulePath = "/usr/local/nginx/conf/waf/wafconf/"
+        RulePath = "/usr/local/nginx/conf/waf/wafconf/"
         --规则存放目录
         attacklog = "off"
         --是否开启攻击信息记录，需要配置logdir
