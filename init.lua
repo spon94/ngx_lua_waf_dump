@@ -4,7 +4,7 @@ local ngxmatch=ngx.re.match
 local unescape=ngx.unescape_uri
 local get_headers = ngx.req.get_headers
 local optionIsOn = function (options) return options == "on" and true or false end
-logpath = logdir 
+logpath = logdir
 rulepath = RulePath
 UrlDeny = optionIsOn(UrlDeny)
 PostCheck = optionIsOn(postMatch)
@@ -14,13 +14,15 @@ PathInfoFix = optionIsOn(PathInfoFix)
 attacklog = optionIsOn(attacklog)
 CCDeny = optionIsOn(CCDeny)
 Redirect=optionIsOn(Redirect)
+-- 获取访问IP地址
 function getClientIp()
-        IP  = ngx.var.remote_addr 
+        IP  = ngx.var.remote_addr
         if IP == nil then
                 IP  = "unknown"
         end
         return IP
 end
+-- 写入防御日志
 function write(logfile,msg)
     local fd = io.open(logfile,"ab")
     if fd == nil then return end
@@ -28,6 +30,7 @@ function write(logfile,msg)
     fd:flush()
     fd:close()
 end
+-- 日志信息处理
 function log(method,url,data,ruletag)
     if attacklog then
         local realIp = getClientIp()
@@ -43,8 +46,9 @@ function log(method,url,data,ruletag)
         write(filename,line)
     end
 end
-------------------------------------规则读取函数-------------------------------------------------------------------
+-------------------------------------------------------------------规则读取函数-------------------------------------------------------------------
 function read_rule(var)
+    -- .. 字符串拼接
     file = io.open(rulepath..'/'..var,"r")
     if file==nil then
         return
@@ -79,8 +83,8 @@ function whiteurl()
         if wturlrules ~=nil then
             for _,rule in pairs(wturlrules) do
                 if ngxmatch(ngx.var.uri,rule,"isjo") then
-                    return true 
-                 end
+                    return true
+                end
             end
         end
     end
@@ -109,8 +113,8 @@ function args()
         local args = ngx.req.get_uri_args()
         for key, val in pairs(args) do
             if type(val)=='table' then
-                 local t={}
-                 for k,v in pairs(val) do
+                local t={}
+                for k,v in pairs(val) do
                     if v == true then
                         v=""
                     end
@@ -191,10 +195,10 @@ function denycc()
         local req,_=limit:get(token)
         if req then
             if req > CCcount then
-                 ngx.exit(503)
+                ngx.exit(503)
                 return true
             else
-                 limit:incr(token,1)
+                limit:incr(token,1)
             end
         else
             limit:set(token,1,CCseconds)
@@ -233,13 +237,13 @@ function whiteip()
 end
 
 function blockip()
-     if next(ipBlocklist) ~= nil then
-         for _,ip in pairs(ipBlocklist) do
-             if getClientIp()==ip then
-                 ngx.exit(403)
-                 return true
-             end
-         end
-     end
-         return false
+    if next(ipBlocklist) ~= nil then
+        for _,ip in pairs(ipBlocklist) do
+            if getClientIp()==ip then
+                ngx.exit(403)
+                return true
+            end
+        end
+    end
+        return false
 end

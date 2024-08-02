@@ -14,7 +14,7 @@ elseif url() then
 elseif args() then
 elseif cookie() then
 elseif PostCheck then
-    if method=="POST" then   
+    if method=="POST" then
             local boundary = get_boundary()
 	    if boundary then
 	    local len = string.len
